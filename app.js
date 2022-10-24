@@ -5,6 +5,7 @@ import indexRouter from "./routes/index.js";
 import usersRouter from "./routes/users.js";
 import mongoose from 'mongoose';
 
+mongoose.Promise = Promise;
 mongoose.connect(process.env.DATABASE_URL || 'mongodb://localhost/qroket');
 
 const app = express();
@@ -28,7 +29,7 @@ app.use(function (err, req, res, next) {
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
   // Send the error status
-  res.status(err.status || 5gi00);
+  res.status(err.status || 500);
   res.send(err.message);
 });
 
