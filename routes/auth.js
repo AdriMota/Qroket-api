@@ -6,21 +6,24 @@ import * as config from "../config.js";
 
 const router = express.Router();
 
-router.post('/login', async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
+    
     if (!user) {
       res.status(401).send('Bad login');
       return;
     }
 
     const password = req.body.password;
-    const passwordHash = user.passwordHash;
+    const passwordHash = user.password;
+    const userRole = user.role;
+    const subject = user._id;
+    const expiresIn = '7 days';
     const valid = await bcrypt.compare(password, passwordHash);
+
     if (valid) {
-      const subject = user._id;
-      const expiresIn = '7 jours';
-      jwt.sign({ sub: subject }, config.jwtSecret, { expiresIn }, (err, token) => {
+      jwt.sign({ sub: subject, userRole }, process.env.JWT_SECRET, { expiresIn }, (err, token) => {
         if (err) {
           next(err);
         } else {
@@ -28,7 +31,7 @@ router.post('/login', async (req, res, next) => {
         }
       });
     } else {
-      res.status(401).send('Mauvais login');
+      res.status(401).send('Bad login');
     }
   } catch (err) {
     next(err);
@@ -49,12 +52,13 @@ export function authenticate(req, res, next) {
   }
 
   const bearerToken = match[1];
-  jwt.verify(bearerToken, config.jwtSecret, (err, payload) => {
+  jwt.verify(bearerToken, process.env.JWT_SECRET, (err, payload) => {
     if (err) {
       return res.sendStatus(401);
     }
 
     req.userId = payload.sub;
+    req.role = payload.userRole;
     next();
   });
 }

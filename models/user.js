@@ -22,16 +22,21 @@ const userSchema = new Schema({
         required: true,
         unique: true
     },
-    passwordHash: {
+    password: {
         type: String,
         required: true,
         minlength: [8, 'trop court'],
         maxlength: [20, 'trop long']
     },
-    /* picture: {
-        type: Image,
+    picture: {
+        binary: Buffer,
         required: false
-    }, */
+    },
+    role: {
+        type: String,
+        enum: [ 'admin', 'user' ],
+        default: 'user'
+    },
     // Foreign key for Animal
     animal: [{
         type: Schema.Types.ObjectId, 
@@ -44,12 +49,10 @@ const userSchema = new Schema({
     }]
 });
 
-userSchema.virtual('password');
-
 userSchema.pre('save', async function() {
   if (this.password) {
-    const passwordHash = await bcrypt.hash(this.password, config.bcryptCostFactor);
-    this.passwordHash = passwordHash;
+    const passwordHash = await bcrypt.hash(this.password, 10);
+    this.password = passwordHash;
   }
 });
 
