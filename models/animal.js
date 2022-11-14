@@ -29,10 +29,10 @@ const animalSchema = new Schema({
         enum: [ 'lost', 'find' ],
         default: 'lost'
     },
-    /* picture: {
-        type: Image,
-        required: true
-    }, */
+    picture: {
+        binary: Buffer,
+        required: false
+    },
     // Foreign key for User
     user: [{
         type: Schema.Types.ObjectId, 

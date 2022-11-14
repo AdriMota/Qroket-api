@@ -3,11 +3,9 @@ import User from "../models/user.js";
 import { authenticate } from "./auth.js";
 import asyncHandler from "express-async-handler";
 import bcrypt from 'bcrypt';
-import mongoose from 'mongoose';
-
+import { checkPermissions, loadRessourceFromParamsMiddleware } from "../lib/utils.js";
 
 const router = express.Router();
-const ObjectId = mongoose.Types.ObjectId;
 
 
 /* ---------------------------------------------------------------
@@ -48,30 +46,32 @@ router.get("/", authenticate, checkPermissions, asyncHandler(async (req, res, ne
 /* ---------------------------------------------------------------
     METTRE A JOUR UN UTILISATEUR
 --------------------------------------------------------------- */
-router.patch('/:id', authenticate, loadUserFromParamsMiddleware, checkPermissions, asyncHandler(async (req, res, next) => {
+router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(User), checkPermissions, asyncHandler(async (req, res, next) => {
+  const user = req.ressource;
+
   if (req.body.firstname !== undefined) {
-    req.user.firstname = req.body.firstname;
+    user.firstname = req.body.firstname;
   }
 
   if (req.body.lastname !== undefined) {
-    req.user.lastname = req.body.lastname;
+    user.lastname = req.body.lastname;
   }
 
   if (req.body.email !== undefined) {
-    req.user.email = req.body.email;
+    user.email = req.body.email;
   }
 
   if (req.body.password !== undefined) {
     const passwordHash = await bcrypt.hash(req.body.password, 10)
-    req.user.password = passwordHash;
+    user.password = passwordHash;
   }
 
   // ????????????????????????????????????????????????????????????????????????
   // PICTURE PICTURE PICTURE PICTURE PICTURE PICTURE PICTURE PICTURE PICTURE
   // ????????????????????????????????????????????????????????????????????????
 
-  await req.user.save();
-  res.status(200).send(req.user);
+  await user.save();
+  res.status(200).send(user);
 
 }));
 
@@ -79,51 +79,17 @@ router.patch('/:id', authenticate, loadUserFromParamsMiddleware, checkPermission
 /* ---------------------------------------------------------------
     SUPPRIMER UN UTILISATEUR
 --------------------------------------------------------------- */
-router.delete('/:id', authenticate, loadUserFromParamsMiddleware, checkPermissions, asyncHandler(async (req, res, next) => {
+router.delete('/:id', authenticate, loadRessourceFromParamsMiddleware(User), checkPermissions, asyncHandler(async (req, res, next) => {
+  const user = req.ressource;
+  
   await User.deleteOne({
     _id: req.params.id
   });
 
-  const email = req.user.email;
+  const email = user.email;
   res.status(200).send({user: email, status: 'deleted'});
 
 }));
-
-
-/* ---------------------------------------------------------------
-    UTILISATEUR EXISTANT
---------------------------------------------------------------- */
-async function loadUserFromParamsMiddleware(req, res, next) {
-  const userId = req.params.id;
-
-  if (!ObjectId.isValid(userId)) {
-    return userNotFound(res, userId);
-  }
-
-  const user = await User.findById(req.params.id);
-  if (!user) { 
-    return userNotFound(res, userId) 
-  }
-
-  req.user = user;
-  next();
-}
-
-function userNotFound(res, userId) {
-  return res.status(404).type('text').send(`Aucun utilisateur avec l'ID ${userId} trouvé.`);
-}
-
-
-/* ---------------------------------------------------------------
-    PERMISSIONS UTILISATEUR
---------------------------------------------------------------- */
-function checkPermissions(req, res, next) {
-  const authorized = req.role === 'admin' || req.userId.toString() === req.user.id;
-  if (!authorized) {
-    return res.status(403).send("Tu n'as pas les droits :/")
-  }
-  next();
-}
 
 
 export default router;

@@ -3,6 +3,7 @@ import createError from "http-errors";
 import logger from "morgan";
 import indexRouter from "./routes/index.js";
 import usersRouter from "./routes/users.js";
+import animalsRouter from "./routes/animals.js";
 import authRouter from "./routes/auth.js";
 import mongoose from 'mongoose';
 
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/animals", animalsRouter);
 app.use("/auth", authRouter);
 
 // catch 404 and forward to error handler

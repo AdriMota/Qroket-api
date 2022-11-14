@@ -48,13 +48,6 @@ const userSchema = new Schema({
     }]
 });
 
-/* userSchema.pre('save', async function() {
-  if (this.password) {
-    const passwordHash = await bcrypt.hash(this.password, 10);
-    this.password = passwordHash;
-  }
-}); */
-
 userSchema.set("toJSON", {
   transform: transformJsonUser
 });
