@@ -35,6 +35,25 @@ router.get("/", authenticate, asyncHandler(async (req, res, next) => {
 
 
 /* ---------------------------------------------------------------
+    RECUPERER LES ANCIENNES ANONCES D'ANIMAUX
+--------------------------------------------------------------- */
+router.get("/missing", authenticate, asyncHandler(async (req, res, next) => {
+    let query = Animal.find({});
+
+    let today = new Date();
+    let redDate = new Date(new Date().setDate(today.getDate() - 30));
+
+    // lte -> signifie <=
+    query = query.where('date').lte(redDate);
+
+    query = await query.exec();
+
+    // Send the saved document in the response
+    res.send(query);
+}));
+
+
+/* ---------------------------------------------------------------
     METTRE A JOUR UN ANIMAL
 --------------------------------------------------------------- */
 router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(Animal), checkPermissions, asyncHandler(async (req, res, next) => {
