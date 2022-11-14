@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
 import 'mongoose-type-email';
 const Schema = mongoose.Schema;
 
@@ -25,8 +24,8 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true,
-        minlength: [8, 'trop court'],
-        maxlength: [20, 'trop long']
+        minlength: [8, 'trop court']
+        //maxlength: [20, 'trop long']
     },
     picture: {
         binary: Buffer,
@@ -49,12 +48,12 @@ const userSchema = new Schema({
     }]
 });
 
-userSchema.pre('save', async function() {
+/* userSchema.pre('save', async function() {
   if (this.password) {
     const passwordHash = await bcrypt.hash(this.password, 10);
     this.password = passwordHash;
   }
-});
+}); */
 
 userSchema.set("toJSON", {
   transform: transformJsonUser
@@ -62,7 +61,7 @@ userSchema.set("toJSON", {
 
 function transformJsonUser(doc, json, options) {
  // Remove the hashed password from the generated JSON.
- delete json.passwordHash;
+ delete json.password; //passwordHash
  delete json.__v;
  json.id = json._id;
  delete json._id;
