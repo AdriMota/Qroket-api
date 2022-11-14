@@ -16,6 +16,10 @@ const userSchema = new Schema({
         minlength: [3, 'trop court'],
         maxlength: [50, 'trop long']
     },
+    phone: {
+        type: Number,
+        required: false
+    },
     email: {
         type: mongoose.SchemaTypes.Email,
         required: true,

@@ -57,6 +57,10 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(User), chec
     user.lastname = req.body.lastname;
   }
 
+  if (req.body.phone !== undefined) {
+    user.phone = req.body.phone;
+  }
+
   if (req.body.email !== undefined) {
     user.email = req.body.email;
   }

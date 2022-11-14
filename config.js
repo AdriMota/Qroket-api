@@ -12,5 +12,5 @@ if (process.env.PORT) {
 }
 
 export const port = process.env.PORT || 3000;
-export const secretKey = process.env.TASKED_SECRET_KEY;
+export const secretKey = process.env.QROCKET_SECRET_KEY;
 export const databaseUrl = process.env.DATABASE_URL || 'mongodb://127.0.0.1/qroket'
