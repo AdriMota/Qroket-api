@@ -40,16 +40,11 @@ const userSchema = new Schema({
         enum: [ 'admin', 'user' ],
         default: 'user'
     },
-    // Foreign key for Animal
-    animal: [{
-        type: Schema.Types.ObjectId, 
-        ref: 'Animal'
-    }],
     // Foreign key for Location
-    location: [{
+    location: {
         type: Schema.Types.ObjectId, 
         ref: 'Location'
-    }]
+    }
 });
 
 userSchema.set("toJSON", {

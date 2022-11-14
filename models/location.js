@@ -28,17 +28,7 @@ const locationSchema = new Schema({
                 message: '{VALUE} is not a valid longitude/latitude(/altitude) coordinates array'
             }
         }
-    },
-    // Foreign key for User
-    user: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }],
-    // Foreign key for Animal
-    animal: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Animal'
-    }]
+    }
 });
 
 

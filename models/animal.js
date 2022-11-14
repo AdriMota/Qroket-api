@@ -22,7 +22,13 @@ const animalSchema = new Schema({
     date: {
         type: Date,
         default: Date.now,
-        required: true
+        required: true,
+        validate: {
+            validator: function(date) {
+                return date <= Date.now()
+            },
+            message: "La date ne peut pas être dans le futur."
+        }
     },
     type: {
         type: String,
@@ -34,15 +40,17 @@ const animalSchema = new Schema({
         required: false
     },
     // Foreign key for User
-    user: [{
+    user: {
         type: Schema.Types.ObjectId, 
-        ref: 'User'
-    }],
+        ref: 'User',
+        required: true
+    },
     // Foreign key for Location
-    location: [{
+    location: {
         type: Schema.Types.ObjectId, 
-        ref: 'Location'
-    }]
+        ref: 'Location',
+        required: true
+    }
 });
 
 // Create the model from the schema and export it
