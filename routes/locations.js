@@ -19,7 +19,6 @@ router.post("/", authenticate, asyncHandler(async (req, res, next) => {
 
     // Send the saved document in the response
     res.status(201).send(newLocation);
-    broadcastMessage({ location: newLocation });
 }));
 
 

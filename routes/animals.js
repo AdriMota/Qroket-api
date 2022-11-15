@@ -19,7 +19,7 @@ router.post("/", authenticate, asyncHandler(async (req, res, next) => {
 
     // Send the saved document in the response
     res.status(201).send(newAnimal);
-    broadcastMessage({ animal: newAnimal });
+    broadcastMessage({ event: "New animal added : ", animal: newAnimal });
 }));
 
 

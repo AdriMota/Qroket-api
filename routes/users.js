@@ -5,11 +5,10 @@ import asyncHandler from "express-async-handler";
 import bcrypt from 'bcrypt';
 import { checkPermissions, loadRessourceFromParamsMiddleware } from "../lib/utils.js";
 import mongoose from 'mongoose';
-import { broadcastMessage } from '../ws.js';
+import { broadcastAdminMessage } from '../ws.js';
 
 const router = express.Router();
 const ObjectId = mongoose.Types.ObjectId;
-
 
 /* ---------------------------------------------------------------
     AJOUTER UN UTILISATEUR
@@ -26,7 +25,11 @@ router.post("/", asyncHandler(async (req, res, next) => {
 
   // Send the saved document in the response
   res.status(201).send(newUser);
-  broadcastMessage({ user: newUser });
+  
+  if(newUser.role === "admin") {
+    // BroadcastMessage pour les administrateurs seulement.
+    broadcastAdminMessage({ event: "New admin added : ", user: newUser });
+  } 
 
   // ????????????????????????????????????????????????????????????????????????
   // NE PAS AJOUTER UN ADMIN  NE PAS AJOUTER UN ADMIN NE PAS AJOUTER UN ADMIN
@@ -170,6 +173,10 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(User), chec
   await user.save();
   res.status(200).send(user);
 
+  if (req.body.role !== undefined && req.role === "admin") {
+    // BroadcastMessage pour les administrateurs seulement.
+    broadcastAdminMessage({ event: "Role changed, new admin : ", user: user });
+  }
 }));
 
 

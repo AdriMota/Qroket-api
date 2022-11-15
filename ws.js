@@ -1,5 +1,6 @@
 import createDebugger from 'debug';
 import { WebSocketServer } from 'ws';
+import User from "./models/user.js";
 
 const debug = createDebugger('express-api:messaging');
 
@@ -49,6 +50,23 @@ export function broadcastMessage(message) {
     // You can easily iterate over the "clients" array to send a message to all connected clients.
     for(const client of clients){
         client.send(JSON.stringify(message));
+        console.log(client);
+    }
+}
+
+export async function broadcastAdminMessage(message) {
+    debug(
+        `Broadcasting message to all connected admins: ${JSON.stringify(message)}`
+    );
+
+    let admins = await User.find({role: 'admin'});
+    //console.log(admins);
+    
+    // You can easily iterate over the "admins" array to send a message to all connected admins.
+    for(const admin of admins){
+        //console.log(admin);
+        
+        admin.send(JSON.stringify(message));
     }
 }
 
