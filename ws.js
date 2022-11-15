@@ -1,6 +1,7 @@
 import createDebugger from 'debug';
 import { WebSocketServer } from 'ws';
 import User from "./models/user.js";
+import {tokenToUser} from "./routes/auth.js"
 
 const debug = createDebugger('express-api:messaging');
 
@@ -13,11 +14,26 @@ export function createWebSocketServer(httpServer) {
     });
 
     // Handle new client connections.
-    wss.on('connection', function (ws) {
+    wss.on('connection', async function (ws, req) {
         debug('New WebSocket client connected');
 
+        const user = await tokenToUser(req);
+        if (!user) {
+            //console.log('User not authenticated');
+            ws.send('User not authenticated');
+            ws.close();
+            return;
+        }
+
+        //console.log(`User authenticated: ${user.email}`);
+
         // Keep track of clients.
-        clients.push(ws);
+        clients.push({
+            "id": user._id,
+            "socket": ws
+        });
+
+
 
         // Listen for messages sent by clients.
         ws.on('message', (message) => {
@@ -49,8 +65,7 @@ export function broadcastMessage(message) {
 
     // You can easily iterate over the "clients" array to send a message to all connected clients.
     for(const client of clients){
-        client.send(JSON.stringify(message));
-        console.log(client);
+        client.socket.send(JSON.stringify(message));
     }
 }
 
@@ -59,14 +74,19 @@ export async function broadcastAdminMessage(message) {
         `Broadcasting message to all connected admins: ${JSON.stringify(message)}`
     );
 
-    let admins = await User.find({role: 'admin'});
-    //console.log(admins);
-    
-    // You can easily iterate over the "admins" array to send a message to all connected admins.
-    for(const admin of admins){
-        //console.log(admin);
-        
-        admin.send(JSON.stringify(message));
+    // You can easily iterate over the "clients" array to send a message to all connected clients.
+    for (const client of clients) {
+        // test if the user is an admin
+        const user = await User.findById(client.id);
+        //test if we have a user
+        if (user) {
+            if (user.role == 'admin') {
+                client.socket.send(JSON.stringify(message));
+                //console.log("Sending message to user " + user.email + " Message :" + JSON.stringify(message));
+            }
+        } else {
+            console.log('User not found');
+        }
     }
 }
 
