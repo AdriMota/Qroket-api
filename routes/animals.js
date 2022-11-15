@@ -3,6 +3,7 @@ import Animal from "../models/animal.js";
 import { authenticate } from "./auth.js";
 import asyncHandler from "express-async-handler";
 import { checkPermissions, loadRessourceFromParamsMiddleware } from "../lib/utils.js";
+import { broadcastMessage } from '../ws.js';
 
 const router = express.Router();
 
@@ -18,6 +19,7 @@ router.post("/", authenticate, asyncHandler(async (req, res, next) => {
 
     // Send the saved document in the response
     res.status(201).send(newAnimal);
+    broadcastMessage({ animal: newAnimal });
 }));
 
 

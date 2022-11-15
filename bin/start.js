@@ -7,6 +7,7 @@
 import app from "../app.js";
 import createDebugger from "debug";
 import http from "http";
+import { createWebSocketServer } from '../ws.js';
 
 const debug = createDebugger('qroket:server')
 /**
@@ -17,10 +18,11 @@ const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
 /**
- * Create HTTP server.
+ * Create HTTP server & WebSocket servers.
  */
 
 const server = http.createServer(app);
+createWebSocketServer(server);
 
 /**
  * Listen on provided port, on all network interfaces.
