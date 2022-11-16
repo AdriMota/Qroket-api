@@ -1,7 +1,7 @@
 import createDebugger from 'debug';
 import { WebSocketServer } from 'ws';
 import User from "./models/user.js";
-import {tokenToUser} from "./routes/auth.js"
+import { tokenToUser } from "./routes/auth.js"
 
 const debug = createDebugger('express-api:messaging');
 
@@ -32,8 +32,6 @@ export function createWebSocketServer(httpServer) {
             "id": user._id,
             "socket": ws
         });
-
-
 
         // Listen for messages sent by clients.
         ws.on('message', (message) => {

@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/', async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
-    
+
     if (!user) {
       res.status(401).send('Bad login');
       return;
@@ -37,8 +37,6 @@ router.post('/', async (req, res, next) => {
     next(err);
   }
 });
-
-export default router;
 
 export function authenticate(req, res, next) {
   const authorizationHeader = req.get('Authorization');
@@ -71,9 +69,11 @@ export function tokenToUser(req) {
   if (!token) return null;
 
   try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET);
-      return User.findById(payload.sub);
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    return User.findById(payload.sub);
   } catch (err) {
-      return null;
+    return null;
   }
 }
+
+export default router;

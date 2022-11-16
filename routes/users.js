@@ -1,11 +1,14 @@
 import express, { Router } from "express";
 import User from "../models/user.js";
+import Animal from "../models/animal.js";
 import { authenticate } from "./auth.js";
 import asyncHandler from "express-async-handler";
 import bcrypt from 'bcrypt';
 import { checkPermissions, loadRessourceFromParamsMiddleware } from "../lib/utils.js";
 import mongoose from 'mongoose';
 import { broadcastAdminMessage } from '../ws.js';
+import { upload } from "../lib/loadImage.js";
+//import multer from "multer";
 
 const router = express.Router();
 const ObjectId = mongoose.Types.ObjectId;
@@ -21,19 +24,58 @@ router.post("/", asyncHandler(async (req, res, next) => {
   newUser.password = passwordHash;
 
   // Save that document
-  await newUser.save();
+  newUser.save();
 
   // Send the saved document in the response
   res.status(201).send(newUser);
-  
-  if(newUser.role === "admin") {
+
+  if (newUser.role === "admin") {
     // BroadcastMessage pour les administrateurs seulement.
     broadcastAdminMessage({ event: "New admin added : ", user: newUser });
-  } 
+  }
 
   // ????????????????????????????????????????????????????????????????????????
   // NE PAS AJOUTER UN ADMIN  NE PAS AJOUTER UN ADMIN NE PAS AJOUTER UN ADMIN
   // ????????????????????????????????????????????????????????????????????????
+}));
+
+
+/* ---------------------------------------------------------------
+    AJOUTER UNE IMAGE A UN UTILISATEUR
+--------------------------------------------------------------- */
+router.post("/:id/picture", asyncHandler(async (req, res, next) => {
+  upload(req, res, function (err) {
+    const user = req.ressource;
+
+    user.picture = {
+      data: req.file.filename,
+      contentType: 'image/jpg'
+    }
+
+    // Save that document
+    user.save();
+
+    // Send the saved document in the response
+    res.status(201).send(user);
+  })
+
+  /* upload(req, res, function (err) {
+
+    const newPicture = new User({
+      picture: {
+        data: req.file.filename,
+        contentType: 'image/jpg'
+      }
+    })
+
+    // Save that document
+    newPicture.save();
+    
+    // Send the saved document in the response
+    res.status(201).send(newPicture);
+  }); */
+
+  //if (req.fileFormatError) return res.send(req.fileFormatError);
 }));
 
 
@@ -70,7 +112,7 @@ router.get("/", authenticate, checkPermissions, asyncHandler(async (req, res, ne
     total: total,
     data: query
   });
-  
+
 }));
 
 
@@ -155,6 +197,19 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(User), chec
     user.email = req.body.email;
   }
 
+  if (req.body.location !== undefined) {
+    user.location = req.body.location;
+  }
+
+  // Update image
+  /*  if (req.file) {
+     const ext = req.file.mimetype.split('/')
+     req.body.picture = {
+       url: new URL(`../uploads/${req.file.filename}`, import.meta.url),
+       ext: ext[1]
+     }
+   } */
+
   if (req.body.role !== undefined && req.role === "admin") {
     user.role = req.body.role;
   } else {
@@ -184,6 +239,15 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(User), chec
     SUPPRIMER UN UTILISATEUR
 --------------------------------------------------------------- */
 router.delete('/:id', authenticate, loadRessourceFromParamsMiddleware(User), checkPermissions, asyncHandler(async (req, res, next) => {
+  // Delete the animals of the user
+  await Animal.deleteMany({ user: req.params.id });
+
+  // Delete image
+  /* const filePath = new URL(`../uploads/qroket_${req.params.id}.${deletedPost.picture.ext}`, import.meta.url)
+  fs.exists(filePath, function (exists) {
+    if (exists) fs.unlinkSync(filePath)
+  }) */
+
   const user = req.ressource;
 
   await User.deleteOne({
