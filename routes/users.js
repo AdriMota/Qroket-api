@@ -169,7 +169,6 @@ router.get('/:id', loadRessourceFromParamsMiddleware(User), asyncHandler(async (
 router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(User), checkPermissions, asyncHandler(async (req, res, next) => {
   const user = req.ressource;
 
-
   if (req.body.firstname !== undefined) {
     user.firstname = req.body.firstname;
   }
@@ -202,6 +201,14 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(User), chec
     const passwordHash = await bcrypt.hash(req.body.password, 10)
     user.password = passwordHash;
   }
+
+  // NE FONCTIONNE PAS MAIS ON S'EST DIT QU'IL Y AVAIT DEJA LE PATCH PICTURE
+  /* if (req.body.picture !== undefined) {
+    const filePath = new URL(`../uploads/${user.picture.name}`, import.meta.url)
+    fs.access(filePath, (err) => {
+      if (!err) fs.unlinkSync(filePath)
+    })
+  } */
 
   await user.save();
   res.status(200).send(user);

@@ -35,12 +35,12 @@ const animalSchema = new Schema({
         enum: [ 'lost', 'find' ],
         default: 'lost'
     },
-    pictures: {
+    pictures: [{
         name: String,
         data: Buffer,
         contentType: String,
         required: false
-    },
+    }],
     // Foreign key for User
     user: {
         type: Schema.Types.ObjectId, 
