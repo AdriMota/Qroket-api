@@ -8,7 +8,8 @@ import { checkPermissions, loadRessourceFromParamsMiddleware } from "../lib/util
 import mongoose from 'mongoose';
 import { broadcastAdminMessage } from '../ws.js';
 import { upload } from "../lib/loadImage.js";
-//import multer from "multer";
+import fs from "fs";
+
 
 const router = express.Router();
 const ObjectId = mongoose.Types.ObjectId;
@@ -23,31 +24,34 @@ router.post("/", asyncHandler(async (req, res, next) => {
   const newUser = new User(req.body);
   newUser.password = passwordHash;
 
-  // Save that document
-  newUser.save();
+  if (req.body.role === "admin") {
+    res.status(403).send("Tu n'as pas les droits pour créer des utilisateurs avec ce rôle :/")
+  } else {
+    // Save that document
+    newUser.save();
 
-  // Send the saved document in the response
-  res.status(201).send(newUser);
+    // Send the saved document in the response
+    res.status(201).send(newUser);
 
-  if (newUser.role === "admin") {
-    // BroadcastMessage pour les administrateurs seulement.
-    broadcastAdminMessage({ event: "New admin added : ", user: newUser });
+    if (newUser.role === "admin") {
+      // BroadcastMessage pour les administrateurs seulement.
+      broadcastAdminMessage({ event: "New admin added : ", user: newUser });
+    }
   }
 
-  // ????????????????????????????????????????????????????????????????????????
-  // NE PAS AJOUTER UN ADMIN  NE PAS AJOUTER UN ADMIN NE PAS AJOUTER UN ADMIN
-  // ????????????????????????????????????????????????????????????????????????
 }));
 
 
 /* ---------------------------------------------------------------
     AJOUTER UNE IMAGE A UN UTILISATEUR
 --------------------------------------------------------------- */
-router.post("/:id/picture", asyncHandler(async (req, res, next) => {
+router.patch("/:id/picture", loadRessourceFromParamsMiddleware(User), asyncHandler(async (req, res, next) => {
+
   upload(req, res, function (err) {
     const user = req.ressource;
 
     user.picture = {
+      name: req.file.filename,
       data: req.file.filename,
       contentType: 'image/jpg'
     }
@@ -57,25 +61,9 @@ router.post("/:id/picture", asyncHandler(async (req, res, next) => {
 
     // Send the saved document in the response
     res.status(201).send(user);
-  })
+  });
 
-  /* upload(req, res, function (err) {
-
-    const newPicture = new User({
-      picture: {
-        data: req.file.filename,
-        contentType: 'image/jpg'
-      }
-    })
-
-    // Save that document
-    newPicture.save();
-    
-    // Send the saved document in the response
-    res.status(201).send(newPicture);
-  }); */
-
-  //if (req.fileFormatError) return res.send(req.fileFormatError);
+  //if (req.fileFormatError) return res.send(req.fileFormatError);*/
 }));
 
 
@@ -117,7 +105,7 @@ router.get("/", authenticate, checkPermissions, asyncHandler(async (req, res, ne
 
 
 /* ---------------------------------------------------------------
-    RECUPERER ANIMAUX D'UN UTILISATEUR
+    RECUPERER UN UTILISATEUR ET SES ANIMAUX
 --------------------------------------------------------------- */
 router.get('/:id', loadRessourceFromParamsMiddleware(User), asyncHandler(async (req, res, next) => {
   User.aggregate([
@@ -181,6 +169,7 @@ router.get('/:id', loadRessourceFromParamsMiddleware(User), asyncHandler(async (
 router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(User), checkPermissions, asyncHandler(async (req, res, next) => {
   const user = req.ressource;
 
+
   if (req.body.firstname !== undefined) {
     user.firstname = req.body.firstname;
   }
@@ -201,29 +190,18 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(User), chec
     user.location = req.body.location;
   }
 
-  // Update image
-  /*  if (req.file) {
-     const ext = req.file.mimetype.split('/')
-     req.body.picture = {
-       url: new URL(`../uploads/${req.file.filename}`, import.meta.url),
-       ext: ext[1]
-     }
-   } */
-
-  if (req.body.role !== undefined && req.role === "admin") {
-    user.role = req.body.role;
-  } else {
-    res.status(403).send("Tu n'as pas les droits pour changer de rôle :/")
+  if (req.body.role !== undefined) {
+    if (req.role === "admin") {
+      user.role = req.body.role;
+    } else {
+      res.status(403).send("Tu n'as pas les droits pour changer de rôle :/")
+    }
   }
 
   if (req.body.password !== undefined) {
     const passwordHash = await bcrypt.hash(req.body.password, 10)
     user.password = passwordHash;
   }
-
-  // ????????????????????????????????????????????????????????????????????????
-  // PICTURE PICTURE PICTURE PICTURE PICTURE PICTURE PICTURE PICTURE PICTURE
-  // ????????????????????????????????????????????????????????????????????????
 
   await user.save();
   res.status(200).send(user);
@@ -242,14 +220,15 @@ router.delete('/:id', authenticate, loadRessourceFromParamsMiddleware(User), che
   // Delete the animals of the user
   await Animal.deleteMany({ user: req.params.id });
 
-  // Delete image
-  /* const filePath = new URL(`../uploads/qroket_${req.params.id}.${deletedPost.picture.ext}`, import.meta.url)
-  fs.exists(filePath, function (exists) {
-    if (exists) fs.unlinkSync(filePath)
-  }) */
-
   const user = req.ressource;
 
+  // Delete image
+  const filePath = new URL(`../uploads/${user.picture.name}`, import.meta.url)
+  fs.access(filePath, (err) => {
+    if (!err) fs.unlinkSync(filePath)
+  })
+
+  // Delete user
   await User.deleteOne({
     _id: req.params.id
   });

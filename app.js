@@ -7,6 +7,7 @@ import animalsRouter from "./routes/animals.js";
 import locationsRouter from "./routes/locations.js";
 import authRouter from "./routes/auth.js";
 import mongoose from 'mongoose';
+import multer from "multer";
 
 mongoose.Promise = Promise;
 mongoose.connect(process.env.DATABASE_URL || 'mongodb://localhost/qroket');

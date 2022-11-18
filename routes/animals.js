@@ -4,6 +4,8 @@ import { authenticate } from "./auth.js";
 import asyncHandler from "express-async-handler";
 import { checkPermissions, loadRessourceFromParamsMiddleware } from "../lib/utils.js";
 import { broadcastMessage } from '../ws.js';
+import { uploads } from "../lib/loadImage.js";
+import fs from "fs";
 
 const router = express.Router();
 
@@ -24,6 +26,57 @@ router.post("/", authenticate, asyncHandler(async (req, res, next) => {
 
 
 /* ---------------------------------------------------------------
+    AJOUTER PLUSIEURS IMAGES A UN ANIMAL
+--------------------------------------------------------------- */
+router.patch("/:id/pictures", loadRessourceFromParamsMiddleware(Animal), asyncHandler(async (req, res, next) => {
+
+    uploads(req, res, function (err) {
+        const animal = req.ressource;
+
+        /* req.files.forEach(picture => {
+            animal.pictures.push({
+                name: picture.filename,
+                data: picture.filename,
+                contentType: 'image/jpg'
+            })
+        }); */
+
+        /* req.files.forEach(picture => {
+            animal.pictures.append('picture', {
+                name: picture.filename,
+                data: picture.filename,
+                contentType: 'image/jpg'
+            });
+        }); */
+
+        console.log(animal);
+
+        req.files.forEach(picture => {
+            animal.pictures = {
+                name: picture.filename,
+                data: picture.filename,
+                contentType: 'image/jpg'
+            }
+        });
+        
+        /* animal.pictures = {
+            name: req.files.filename,
+            data: req.files.filename,
+            contentType: 'image/jpg'
+        } */
+
+        // Save that document
+        animal.save();
+
+        // Send the saved document in the response
+        res.status(201).send(animal);
+    });
+
+    //if (req.fileFormatError) return res.send(req.fileFormatError);*/
+}));
+
+
+/* ---------------------------------------------------------------
     RECUPERER LES ANIMAUX
 --------------------------------------------------------------- */
 router.get("/", authenticate, asyncHandler(async (req, res, next) => {
@@ -33,6 +86,19 @@ router.get("/", authenticate, asyncHandler(async (req, res, next) => {
 
     // Send the saved document in the response
     res.send(animals);
+}));
+
+
+/* ---------------------------------------------------------------
+    RECUPERER UN ANIMAL
+--------------------------------------------------------------- */
+router.get("/:id", authenticate, asyncHandler(async (req, res, next) => {
+    let animal = Animal.findOne({ id: req.params.id });
+
+    animal = await animal.exec();
+
+    // Send the saved document in the response
+    res.send(animal);
 }));
 
 
@@ -63,15 +129,15 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(Animal), ch
     if (req.body.name !== undefined) {
         animal.name = req.body.name;
     }
-  
+
     if (req.body.age !== undefined) {
-      animal.age = req.body.age;
+        animal.age = req.body.age;
     }
-  
+
     if (req.body.description !== undefined) {
-      animal.description = req.body.description;
+        animal.description = req.body.description;
     }
-  
+
     if (req.body.fur !== undefined) {
         animal.fur = req.body.fur;
     }
@@ -91,14 +157,14 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(Animal), ch
     if (req.body.location !== undefined) {
         animal.location = req.body.location;
     }
-  
+
     // // ????????????????????????????????????????????????????????????????????????
     // // PICTURE PICTURE PICTURE PICTURE PICTURE PICTURE PICTURE PICTURE PICTURE
     // // ????????????????????????????????????????????????????????????????????????
-  
+
     await animal.save();
     res.status(200).send(animal);
-  
+
 }));
 
 
@@ -107,14 +173,14 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(Animal), ch
 --------------------------------------------------------------- */
 router.delete('/:id', authenticate, loadRessourceFromParamsMiddleware(Animal), checkPermissions, asyncHandler(async (req, res, next) => {
     const animal = req.ressource;
-    
+
     await Animal.deleteOne({
-      _id: req.params.id
+        _id: req.params.id
     });
-  
+
     const name = animal.name;
-    res.status(200).send({animal: name, status: 'deleted'});
-  
+    res.status(200).send({ animal: name, status: 'deleted' });
+
 }));
 
 

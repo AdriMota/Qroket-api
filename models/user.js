@@ -32,6 +32,7 @@ const userSchema = new Schema({
         //maxlength: [20, 'trop long']
     },
     picture: {
+        name: String,
         data: Buffer,
         contentType: String,
         required: false
