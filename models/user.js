@@ -29,7 +29,6 @@ const userSchema = new Schema({
         type: String,
         required: true,
         minlength: [8, 'trop court']
-        //maxlength: [20, 'trop long']
     },
     picture: {
         name: String,
