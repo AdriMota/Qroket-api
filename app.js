@@ -14,7 +14,11 @@ mongoose.connect(process.env.DATABASE_URL || 'mongodb://localhost/qroket');
 
 const app = express();
 
-app.use(logger("dev"));
+// Log requests (except in test mode).
+if (process.env.NODE_ENV !== 'test') {
+  app.use(logger('dev'));
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

@@ -4,7 +4,7 @@ import Animal from "../models/animal.js";
 import { authenticate } from "./auth.js";
 import asyncHandler from "express-async-handler";
 import bcrypt from 'bcrypt';
-import { checkPermissions, loadRessourceFromParamsMiddleware } from "../lib/utils.js";
+import { checkPermissions, loadRessourceFromParamsMiddleware, compare } from "../lib/utils.js";
 import mongoose from 'mongoose';
 import { broadcastAdminMessage } from '../ws.js';
 import { upload } from "../lib/loadImage.js";
@@ -31,7 +31,7 @@ router.post("/", asyncHandler(async (req, res, next) => {
     newUser.save();
 
     // Send the saved document in the response
-    res.status(201).send(newUser);
+    res.status(200).send(newUser);
 
     if (newUser.role === "admin") {
       // BroadcastMessage pour les administrateurs seulement.
@@ -70,10 +70,10 @@ router.patch("/:id/picture", loadRessourceFromParamsMiddleware(User), asyncHandl
 /* ---------------------------------------------------------------
     RECUPERER LES UTILISATEURS
 --------------------------------------------------------------- */
-router.get("/", authenticate, checkPermissions, asyncHandler(async (req, res, next) => {
+router.get("/", authenticate, asyncHandler(async (req, res, next) => {
   const total = await User.count();
 
-  let query = User.find({});
+  let query = User.find({});  
 
   let page = parseInt(req.query.page, 10);
 
@@ -93,8 +93,10 @@ router.get("/", authenticate, checkPermissions, asyncHandler(async (req, res, ne
 
   query = await query.exec();
 
+  query.sort(compare);
+
   // Send the saved document in the response
-  res.send({
+  res.status(200).send({
     page: page,
     pageSize: pageSize,
     total: total,
@@ -193,7 +195,7 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(User), chec
     if (req.role === "admin") {
       user.role = req.body.role;
     } else {
-      res.status(403).send("Tu n'as pas les droits pour changer de rôle :/")
+      return res.status(403).send("Tu n'as pas les droits pour changer de rôle :/")
     }
   }
 
