@@ -9,7 +9,10 @@ Qroket's database contains 3 collections :
 - Animal.
 - Location.
 
-## Usage
+## Usage 
+Visit https://qroket.onrender.com/. Then use our [documentation](https://qroket.onrender.com/apidoc/) to know what you can do. 
+
+## Usage in local
 ```
 # Clone the application.
 git clone git@github.com:AdriMota/Qroket.git
