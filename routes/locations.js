@@ -118,7 +118,6 @@ router.get("/:id", authenticate, loadRessourceFromParamsMiddleware(Location), as
  * @apiVersion 1.0.0
  * @apiDescription Retrieves locations.
  *
- * @apiUse LocationInRequestBody
  * @apiUse LocationInResponseBody
  *
  * @apiExample Example
@@ -278,9 +277,9 @@ router.delete('/:id', authenticate, loadRessourceFromParamsMiddleware(Location),
 
 /**
  * @apiDefine LocationInRequestBody
- * @apiParam (Request body) {Number{4}} npa The npa of the location
- * @apiParam (Request body) {String{1..60}} city The city of the location
- * @apiParam (Request body) {Object} location The type and coordinates of the location
+ * @apiBody (Request body) {Number{4}} npa The npa of the location
+ * @apiBody (Request body) {String{1..60}} city The city of the location
+ * @apiBody (Request body) {Object} location The type and coordinates of the location
  */
 
 /**
@@ -293,7 +292,7 @@ router.delete('/:id', authenticate, loadRessourceFromParamsMiddleware(Location),
 
 /**
  * @apiDefine LocationIncludes
- * @apiParam (URL query parameters) {String} id The unique identifier of the location
+ * @apiQuery (URL query parameters) {String} id The unique identifier of the location
  */
 
 /**
