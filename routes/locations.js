@@ -85,6 +85,8 @@ router.post("/", authenticate, asyncHandler(async (req, res, next) => {
  *     Content-Type: application/json
  *
  *     {
+ *          "npa": 1400,
+ *          "city": "Yverdon-les-Bains",
  *          "location": {
  *              "type": "Point",
  *              "coordinates": [
@@ -93,8 +95,6 @@ router.post("/", authenticate, asyncHandler(async (req, res, next) => {
  *              ]
  *          },
  *          "_id": "63725379e0cac34a8803fdcc",
- *          "npa": 1400,
- *          "city": "Yverdon-les-Bains",
  *          "__v": 0
  *      }
  */
