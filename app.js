@@ -28,6 +28,9 @@ app.use("/animals", animalsRouter);
 app.use("/locations", locationsRouter);
 app.use("/auth", authRouter);
 
+// Serve the apiDoc documentation.
+app.use('/apidoc', express.static(path.join(__dirname, 'docs')));
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
