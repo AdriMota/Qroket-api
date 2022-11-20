@@ -25,7 +25,7 @@ DEBUG=demo:* npm start
 Visit http://localhost:3000.
 To automatically reload the code and re-generate the API documentation on changes, use `npm run dev` instead of `npm start`.
 
-##API Resources
+## API Resources
 
 This API allows you to work with **Users** and **Animals**. An animals MUST have an user.
 
@@ -38,7 +38,7 @@ It will attempt to connect to the MongoDB database at mongodb://localhost/my-app
 
 The tests are implemented with SuperTest.
 
-##Websocket 
+## Websocket 
 WebSocket enables two-way communication between a client and a remote host. In Qroket, WS is used to signal all users when a new animal is posted. It's also used and to signal all admin when a new admin has been created.
 ## Install [ws npm package](https://www.npmjs.com/package/ws?activeTab=readme).
 ```
