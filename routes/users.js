@@ -403,16 +403,12 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(User), chec
   }
 
   if (req.body.role !== undefined) {
-    user.role = req.body.role;
-  }
-
-  /* if (req.body.role !== undefined) {
     if (req.role === "admin") {
       user.role = req.body.role;
     } else {
       return res.status(403).send("Tu n'as pas les droits pour changer de rôle :/")
     }
-  } */
+  }
 
   if (req.body.password !== undefined) {
     const passwordHash = await bcrypt.hash(req.body.password, 10)
