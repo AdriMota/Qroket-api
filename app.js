@@ -8,6 +8,8 @@ import locationsRouter from "./routes/locations.js";
 import authRouter from "./routes/auth.js";
 import mongoose from 'mongoose';
 import multer from "multer";
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 mongoose.Promise = Promise;
 mongoose.connect(process.env.DATABASE_URL || 'mongodb://localhost/qroket');
@@ -29,6 +31,9 @@ app.use("/locations", locationsRouter);
 app.use("/auth", authRouter);
 
 // Serve the apiDoc documentation.
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use('/apidoc', express.static(path.join(__dirname, 'docs')));
 
 // catch 404 and forward to error handler
