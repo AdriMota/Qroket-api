@@ -39,7 +39,7 @@ const router = express.Router();
  * @apiSuccessExample 201 Created
  *     HTTP/1.1 201 Created
  *     Content-Type: application/json
- *     Animal: https://https://qroket.onrender.com/animal/
+ *     Location: https://https://qroket.onrender.com/animal/
  *
  *     {
  *          "_id": "637a53d3fda25eaf8fbd14e5",

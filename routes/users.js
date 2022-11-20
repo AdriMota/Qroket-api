@@ -14,6 +14,47 @@ import fs from "fs";
 const router = express.Router();
 const ObjectId = mongoose.Types.ObjectId;
 
+
+/**
+ * @api {post} /users Create a user
+ * @apiName CreateUser
+ * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Registers a new user.
+ * Firstname, lastname, email, password properties are required.
+ *
+ * @apiUse UserInRequestBody
+ * @apiUse UserInResponseBody
+ *
+ * @apiExample Example
+ *     POST /users HTTP/1.1
+ *     Content-Type: application/json
+ * 
+ *     {
+ *        "firstname": "Jack",
+ *        "lastname": "Sparrow",
+ *        "phone": "0041780000000",
+ *        "email": "jack@sparrow.com",
+ *        "role": "user",
+ *        "password": "password",
+ *        "location": "63725379e0cac34a8803fdcc"
+ *    }
+ *
+ * @apiSuccessExample 201 Created
+ *     HTTP/1.1 201 Created
+ *     Content-Type: application/json
+ *     Location: https://https://qroket.onrender.com/users/
+ *
+ *     {
+ *        "firstname": "Jack",
+ *        "lastname": "Sparrow",
+ *        "phone": "0041780000000",
+ *        "email": "jack@sparrow.com",
+ *        "role": "user",
+ *        "location": "63725379e0cac34a8803fdcc"
+ *        "id": "637a63006839a2f609eba864",
+ *    }
+ */
 /* ---------------------------------------------------------------
     AJOUTER UN UTILISATEUR
 --------------------------------------------------------------- */
@@ -42,6 +83,55 @@ router.post("/", asyncHandler(async (req, res, next) => {
 }));
 
 
+/**
+ * @api {patch} /users/:id/picture Add a picture to an user
+ * @apiName AddPictureUser
+ * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Add one picture to an user.
+ * Firstname, lastname, email, password properties are required.
+ * @apiParam {id} id User id
+ *
+ * @apiUse UserIdInUrlPath
+ * @apiUse UserInRequestBody
+ * @apiUse UserInResponseBody
+ * @apiUse UserNotFoundError
+ *
+ * @apiExample Example
+ *     PATCH /users/637a63006839a2f609eba864/picture HTTP/1.1
+ *     Content-Type: application/octet-stream
+ *
+ *     {
+ *          pictures: "User.jpg",
+ *     }
+ *
+ * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 OK
+ *     Content-Type: application/json
+ *
+ *     {
+ *        "firstname": "Jack",
+ *        "lastname": "Sparrow",
+ *        "phone": "0041780000000",
+ *        "email": "jack@sparrow.com",
+ *        "role": "user",
+ *        "picture": {
+ *          "name": "qroket_1668962510362-137621094.jpg",
+ *          "data": {
+ *            "type": "Buffer",
+ *            "data": [
+ *              113, 114, 111, 107, 101, 116, 95, 49, 54, 54, 56, 57, 54, 50, 53, 49, 48, 51, 54, 50, 45, 49, 51, 55, 54, 50, 49, 48, 57, 52, 46, 106, 112, 103
+ *            ]
+ *          },
+ *          "contentType": "image/jpg",
+ *          "_id": "637a58ce1bbe9bf3795c84e6"
+ *        }
+ *        "location": "63725379e0cac34a8803fdcc"
+ *        "id": "637a63006839a2f609eba864",
+ *    }
+ * 
+ * 
+ */
 /* ---------------------------------------------------------------
     AJOUTER UNE IMAGE A UN UTILISATEUR
 --------------------------------------------------------------- */
@@ -67,6 +157,49 @@ router.patch("/:id/picture", loadRessourceFromParamsMiddleware(User), asyncHandl
 }));
 
 
+/**
+ * @api {get} /users Retrieve users
+ * @apiName RetrieveUsers
+ * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Retrieves users.
+ *
+ * @apiUse UserInResponseBody
+ *
+ * @apiExample Example
+ *     GET /users HTTP/1.1
+ *
+ * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 OK
+ *     Content-Type: application/json
+ *
+ *    {
+ *      "page": 1,
+ *      "pageSize": 100,
+ *      "total": 2,
+ *      "data": [
+ *        {
+ *          "firstname": "Jack",
+ *          "lastname": "Sparrow",
+ *          "phone": "0041780000000",
+ *          "email": "jack@sparrow.com",
+ *          "role": "user",
+ *          "location": "63725379e0cac34a8803fdcc"
+ *          "id": "637a63006839a2f609eba864",
+ *        },
+ *        {
+ *          "firstname": "Angelina",
+ *          "lastname": "Jolie",
+ *          "phone": "0041790000000",
+ *          "email": "angelina@jolie.com",
+ *          "role": "user",
+ *          "location": "63725379e0cac34a8803fdcc"
+ *          "id": "637a63006839a2f609eba248",
+ *        }
+ *      ]
+ *    } 
+ *   
+ */
 /* ---------------------------------------------------------------
     RECUPERER LES UTILISATEURS
 --------------------------------------------------------------- */
@@ -106,6 +239,43 @@ router.get("/", authenticate, asyncHandler(async (req, res, next) => {
 }));
 
 
+/**
+ * @api {get} /users/:id Retrieve a user
+ * @apiName RetrieveUser
+ * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Retrieves one user.
+ * @apiParam {id} id User id
+ *
+ * @apiUse UserIdInUrlPath
+ * @apiUse UserInResponseBody
+ * @apiUse UserIncludes
+ * @apiUse UserNotFoundError
+ * @apiUse Pagination
+ *
+ * @apiExample Example
+ *     GET /users/637a63006839a2f609eba864 HTTP/1.1
+ *
+ * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 OK
+ *     Content-Type: application/json
+ *
+ *     {
+ *        "_id": "637a63006839a2f609eba864",
+ *        "firstname": "Jack",
+ *        "lastname": "Sparrow",
+ *        "phone": 41780000000,
+ *        "email": "jack@sparrow.com",
+ *        "role": "user",
+ *        "picture": {
+ *          "name": "qroket_1668965478181-477686067.jpg",
+ *          "data": "cXJva2V0XzE2Njg5NjU0NzgxODEtNDc3Njg2MDY3LmpwZw==",
+ *          "contentType": "image/jpg"
+ *        },
+ *        "location": "63725379e0cac34a8803fdcc",
+ *        "animal": 0
+ *      }
+ */
 /* ---------------------------------------------------------------
     RECUPERER UN UTILISATEUR ET SES ANIMAUX
 --------------------------------------------------------------- */
@@ -165,6 +335,47 @@ router.get('/:id', loadRessourceFromParamsMiddleware(User), asyncHandler(async (
 }));
 
 
+/**
+ * @api {patch} /users/:id Partially update an user
+ * @apiName PartiallyUpdateUser
+ * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Partially updates user's data (only the properties found in the request body will be updated).
+ * @apiParam {id} id User id
+ *
+ * @apiUse UserIdInUrlPath
+ * @apiUse UserInRequestBody
+ * @apiUse UserInResponseBody
+ * @apiUse UserNotFoundError
+ *
+ * @apiExample Example
+ *     PATCH /users/637a63006839a2f609eba864 HTTP/1.1
+ *     Content-Type: application/json
+ *
+ *     {
+ *          "firstname": "Jackline"
+ *     }
+ *
+ * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 OK
+ *     Content-Type: application/json
+ *
+ *     {
+ *        "_id": "637a63006839a2f609eba864",
+ *        "firstname": "Jackeline",
+ *        "lastname": "Sparrow",
+ *        "phone": 41780000000,
+ *        "email": "jack@sparrow.com",
+ *        "role": "user",
+ *        "picture": {
+ *          "name": "qroket_1668965478181-477686067.jpg",
+ *          "data": "cXJva2V0XzE2Njg5NjU0NzgxODEtNDc3Njg2MDY3LmpwZw==",
+ *          "contentType": "image/jpg"
+ *        },
+ *        "location": "63725379e0cac34a8803fdcc",
+ *        "animal": 0
+ *      }
+ */
 /* ---------------------------------------------------------------
     METTRE A JOUR UN UTILISATEUR
 --------------------------------------------------------------- */
@@ -222,6 +433,30 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(User), chec
 }));
 
 
+/**
+ * @api {delete} /users/:id Delete an user
+ * @apiName DeleteUser
+ * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Permanently deletes an user.
+ * @apiParam {id} id User id
+ *
+ * @apiUse UserIdInUrlPath
+ * @apiUse UserNotFoundError
+ *
+ * @apiExample Example
+ *     DELETE /users/637a63006839a2f609eba864 HTTP/1.1
+ *
+ * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 OK
+ *     Content-Type: application/json
+ *
+ *     {
+ *          "user": "jack@sparrow.com",
+ *          "status": "deleted"
+ * 
+ *     }
+ */
 /* ---------------------------------------------------------------
     SUPPRIMER UN UTILISATEUR
 --------------------------------------------------------------- */
@@ -246,6 +481,56 @@ router.delete('/:id', authenticate, loadRessourceFromParamsMiddleware(User), che
   res.status(200).send({ user: email, status: 'deleted' });
 
 }));
+
+
+/**
+ * @apiDefine UserIdInUrlPath
+ * @apiParam (URL path parameters) {String} id The unique identifier of the user to retrieve
+ */
+
+/**
+ * @apiDefine UserInRequestBody
+ * @apiBody (Request body) {String} firstname The firstname of the user
+ * @apiBody (Request body) {String} lastname The lastname of the user
+ * @apiBody (Request body) {Number} phone The cell phone of the user
+ * @apiBody (Request body) {String} email The email of the user
+ * @apiBody (Request body) {String} role Describe the role of the user
+ * @apiBody (Request body) {String} password The password of the user
+ * @apiBody (Request body) {String} location The id of the location of the user
+ */
+
+/**
+ * @apiDefine UserInResponseBody
+ * @apiSuccess (Request body) {String} firstname The firstname of the user
+ * @apiSuccess (Request body) {String} lastname The lastname of the user
+ * @apiSuccess (Request body) {Number} phone The cell phone of the user
+ * @apiSuccess (Request body) {String} email The email of the user
+ * @apiSuccess (Request body) {String} role Describe the role of the user
+ * @apiSuccess (Request body) {Object} picture The name, data, content-type and id of the picture of the user
+ * @apiSuccess (Request body) {String} location The id of the location of the user
+ * @apiSuccess (Request body) {String} id The id of the user
+ */
+
+/**
+ * @apiDefine Pagination
+ */
+
+/**
+ * @apiDefine UserIncludes
+ * @apiQuery (URL query parameters) {String} id The unique identifier of the User
+ */
+
+/**
+ * @apiDefine UserNotFoundError
+ *
+ * @apiError {Object} 404/NotFound No user was found corresponding to the ID in the URL path
+ *
+ * @apiErrorExample {json} 404 Not Found
+ *     HTTP/1.1 404 Not Found
+ *     Content-Type: text/plain
+ *
+ *     Aucun ressource avec l'ID 63725379e0cac34a8803fass trouvée.
+ */
 
 
 export default router;
