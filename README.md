@@ -30,7 +30,7 @@ To automatically reload the code and re-generate the API documentation on change
 This API allows you to work with **Users** and **Animals**. An animals MUST have an user.
 
 Read the [full documentation]() to know more.
-##Automated tests
+## Automated tests
 
 This application has an automated test suite which you can run with npm test.
 
