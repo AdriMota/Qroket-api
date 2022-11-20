@@ -4,10 +4,10 @@ A basic REST API project implemented with [Express](https://expressjs.com/).
 
 Qroket is an application that allows you to publish a lost or a find animal.
 
-Qroket's database contains 3 collections
-⋅⋅* User.
-⋅⋅* Animal.
-⋅⋅* Location.
+Qroket's database contains 3 collections : 
+- User.
+- Animal.
+- Location.
 
 ## Usage
 ```
