@@ -69,7 +69,7 @@ router.post("/", asyncHandler(async (req, res, next) => {
     res.status(403).send("Tu n'as pas les droits pour créer des utilisateurs avec ce rôle :/")
   } else {
     // Save that document
-    newUser.save();
+    await newUser.save();
 
     // Send the saved document in the response
     res.status(200).send(newUser);
