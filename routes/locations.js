@@ -210,7 +210,7 @@ router.get("/", authenticate, asyncHandler(async (req, res, next) => {
 /* ---------------------------------------------------------------
     METTRE A JOUR UNE LOCALISATION
 --------------------------------------------------------------- */
-router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(Location), checkPermissions, asyncHandler(async (req, res, next) => {
+router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(Location), asyncHandler(async (req, res, next) => {
     const location = req.ressource;
     if (req.body.npa !== undefined) {
         location.npa = req.body.npa;
