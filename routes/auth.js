@@ -19,7 +19,6 @@ router.post('/', async (req, res, next) => {
     const passwordHash = user.password;
     const userRole = user.role;
     const subject = user._id;
-    const email = user.email;
     const expiresIn = '7 days';
     const valid = await bcrypt.compare(password, passwordHash);
 
@@ -28,7 +27,7 @@ router.post('/', async (req, res, next) => {
         if (err) {
           next(err);
         } else {
-          res.send({ email, token });
+          res.send({ user: user, token: token });
         }
       });
     } else {
