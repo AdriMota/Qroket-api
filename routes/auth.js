@@ -27,7 +27,7 @@ router.post('/', async (req, res, next) => {
         if (err) {
           next(err);
         } else {
-          res.send({ token });
+          res.send({ email, token });
         }
       });
     } else {
