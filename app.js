@@ -10,6 +10,9 @@ import mongoose from 'mongoose';
 import multer from "multer";
 import path from 'path';
 import { fileURLToPath } from 'url';
+import cors from 'cors';
+
+app.use(cors);
 
 mongoose.Promise = Promise;
 mongoose.connect(process.env.DATABASE_URL || 'mongodb://localhost/qroket');
