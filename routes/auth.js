@@ -19,6 +19,7 @@ router.post('/', async (req, res, next) => {
     const passwordHash = user.password;
     const userRole = user.role;
     const subject = user._id;
+    const email = user.email;
     const expiresIn = '7 days';
     const valid = await bcrypt.compare(password, passwordHash);
 
