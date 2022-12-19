@@ -33,7 +33,7 @@ const router = express.Router();
  * @apiSuccessExample 201 Created
  *     HTTP/1.1 201 Created
  *     Content-Type: application/json
- *     Location: https://https://qroket.onrender.com/locations/
+ *     Location: https://https://qroket-api.onrender.com/locations/
  *
  *     {
  *          "npa": 1200,
