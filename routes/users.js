@@ -43,7 +43,7 @@ const ObjectId = mongoose.Types.ObjectId;
  * @apiSuccessExample 201 Created
  *     HTTP/1.1 201 Created
  *     Content-Type: application/json
- *     Location: https://https://qroket.onrender.com/users/
+ *     Location: https://https://qroket-api.onrender.com/users/
  *
  *     {
  *        "firstname": "Jack",
