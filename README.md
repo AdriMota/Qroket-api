@@ -10,12 +10,12 @@ Qroket's database contains 3 collections :
 - Location.
 
 ## Usage 
-Visit https://qroket.onrender.com/. Then use our [documentation](https://qroket.onrender.com/apidoc/) to know what you can do. 
+Visit https://qroket-api.onrender.com/. Then use our [documentation](https://qroket-api.onrender.com/apidoc/) to know what you can do. 
 
 ## Usage in local
 ```
 # Clone the application.
-git clone git@github.com:AdriMota/Qroket.git
+git clone git@github.com:AdriMota/Qroket-api.git
 
 
 ## Install dependencies.
@@ -32,7 +32,7 @@ To automatically reload the code and re-generate the API documentation on change
 
 This API allows you to work with **Users** and **Animals**. An animals MUST have an user.
 
-Read the [full documentation](https://qroket.onrender.com/apidoc/) to know more.
+Read the [full documentation](https://qroket-api.onrender.com/apidoc/) to know more.
 ## Automated tests
 
 This application has an automated test suite which you can run with npm test.
