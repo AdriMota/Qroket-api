@@ -10,7 +10,6 @@ import { broadcastAdminMessage } from '../ws.js';
 import { upload } from "../lib/loadImage.js";
 import fs from "fs";
 
-
 const router = express.Router();
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -139,12 +138,17 @@ router.patch("/:id/picture", loadRessourceFromParamsMiddleware(User), asyncHandl
 
   upload(req, res, function (err) {
     const user = req.ressource;
+  
+    let imgToTransform = req.file.path;
+    let base64 = imgToTransform.toString('base64');
 
     user.picture = {
       name: req.file.filename,
-      data: req.file.filename,
-      contentType: 'image/jpg'
+      data: req.file.buffer,
+      contentType: req.file.mimetype
     }
+    console.log(req.file.buffer);
+
 
     // Save that document
     user.save();
@@ -168,7 +172,7 @@ router.get("/:id/picture", loadRessourceFromParamsMiddleware(User), asyncHandler
     return;
   }
 
-  // res.set("Content-Type", user.picture.contentType);
+  res.set("Content-Type", user.picture.contentType);
   res.status(200).send(user.picture);
 }));
 
