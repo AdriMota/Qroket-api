@@ -168,8 +168,8 @@ router.get("/:id/picture", loadRessourceFromParamsMiddleware(User), asyncHandler
     return;
   }
 
-  res.set("Content-Type", user.picture.contentType);
-  res.send(user.picture.data);
+  // res.set("Content-Type", user.picture.contentType);
+  res.status(200).send(user.picture);
 }));
 
 
