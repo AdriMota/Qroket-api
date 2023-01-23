@@ -163,12 +163,12 @@ router.patch("/:id/picture", loadRessourceFromParamsMiddleware(User), asyncHandl
 router.get("/:id/picture", loadRessourceFromParamsMiddleware(User), asyncHandler(async (req, res, next) => {
   const user = req.ressource;
 
-  /* if (!user.picture) {
+  if (!user.picture) {
     res.status(404).send({ message: "Image not found" });
     return;
   }
 
-  res.set("Content-Type", user.picture.contentType); */
+  res.set("Content-Type", user.picture);
   res.send(user);
 }));
 
