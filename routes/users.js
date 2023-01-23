@@ -157,6 +157,23 @@ router.patch("/:id/picture", loadRessourceFromParamsMiddleware(User), asyncHandl
 }));
 
 
+/* ---------------------------------------------------------------
+    RÉCUPERER UNE IMAGE D'UN UTILISATEUR
+--------------------------------------------------------------- */
+router.get("/:id/picture", loadRessourceFromParamsMiddleware(User), asyncHandler(async (req, res, next) => {
+  const user = req.ressource;
+
+  if (!user.picture) {
+    res.status(404).send({ message: "Image not found" });
+    return;
+  }
+
+  res.set("Content-Type", user.picture.contentType);
+  res.send(user.picture.data);
+  
+}));
+
+
 /**
  * @api {get} /users Retrieve users
  * @apiName RetrieveUsers
@@ -333,7 +350,6 @@ router.get('/:id', loadRessourceFromParamsMiddleware(User), asyncHandler(async (
     res.send(results[0]);
   });
 }));
-
 
 /**
  * @api {patch} /users/:id Partially update an user
