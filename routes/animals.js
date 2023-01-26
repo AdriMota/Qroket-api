@@ -301,7 +301,7 @@ router.get("/", authenticate, asyncHandler(async (req, res, next) => {
     RECUPERER UN ANIMAL
 --------------------------------------------------------------- */
 router.get("/:id", authenticate, asyncHandler(async (req, res, next) => {
-    let animal = Animal.findOne({ id: req.params.id });
+    let animal = Animal.findById(req.params.id );
 
     animal = await animal.exec();
 

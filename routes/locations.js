@@ -102,13 +102,13 @@ router.post("/", authenticate, asyncHandler(async (req, res, next) => {
     RECUPERER UNE LOCALISATION
 --------------------------------------------------------------- */
 router.get("/:id", authenticate, loadRessourceFromParamsMiddleware(Location), asyncHandler(async (req, res, next) => {
-    let location = Location.findOne({ id: req.params.id });
-  
+    let location = Location.findById(req.params.id);
+
     location = await location.exec();
-  
-      // Send the saved document in the response
-      res.send(location);
-  }));
+
+    // Send the saved document in the response
+    res.send(location);
+}));
 
 
 /**
@@ -259,14 +259,14 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(Location), 
 --------------------------------------------------------------- */
 router.delete('/:id', authenticate, loadRessourceFromParamsMiddleware(Location), checkPermissions, asyncHandler(async (req, res, next) => {
     const location = req.ressource;
-    
+
     await Location.deleteOne({
-      _id: req.params.id
+        _id: req.params.id
     });
-  
+
     const city = location.city;
-    res.status(200).send({location: city, status: 'deleted'});
-  
+    res.status(200).send({ location: city, status: 'deleted' });
+
 }));
 
 
