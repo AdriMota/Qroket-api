@@ -258,6 +258,19 @@ router.get("/", authenticate, asyncHandler(async (req, res, next) => {
 
 }));
 
+/* ---------------------------------------------------------------
+    RECUPERER CERTAINES DONNEES DES USERS
+--------------------------------------------------------------- */
+router.get("/data", authenticate, asyncHandler(async (req, res, next) => {
+  let users = User.find({});
+
+  users = await users.exec();
+
+  // Send the saved document in the response
+  res.send(users);
+}));
+
+
 
 /**
  * @api {get} /users/:id Retrieve a user
