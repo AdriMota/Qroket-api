@@ -2,7 +2,7 @@ import express, { request, Router } from "express";
 import Animal from "../models/animal.js";
 import { authenticate } from "./auth.js";
 import asyncHandler from "express-async-handler";
-import { checkPermissions, checkPermissionsAnimal, loadRessourceFromParamsMiddleware } from "../lib/utils.js";
+import { checkPermissionsAnimal, loadRessourceFromParamsMiddleware } from "../lib/utils.js";
 import { broadcastMessage } from '../ws.js';
 import { uploads } from "../lib/loadImage.js";
 import fs from "fs";
@@ -468,7 +468,7 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(Animal), ch
 /* ---------------------------------------------------------------
     SUPPRIMER UN ANIMAL
 --------------------------------------------------------------- */
-router.delete('/:id', authenticate, loadRessourceFromParamsMiddleware(Animal), checkPermissions, asyncHandler(async (req, res, next) => {
+router.delete('/:id', authenticate, loadRessourceFromParamsMiddleware(Animal), checkPermissionsAnimal, asyncHandler(async (req, res, next) => {
     const animal = req.ressource;
 
     // Delete image
