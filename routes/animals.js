@@ -2,7 +2,7 @@ import express, { request, Router } from "express";
 import Animal from "../models/animal.js";
 import { authenticate } from "./auth.js";
 import asyncHandler from "express-async-handler";
-import { checkPermissions, loadRessourceFromParamsMiddleware } from "../lib/utils.js";
+import { checkPermissions, checkPermissionsAnimal, loadRessourceFromParamsMiddleware } from "../lib/utils.js";
 import { broadcastMessage } from '../ws.js';
 import { uploads } from "../lib/loadImage.js";
 import fs from "fs";
@@ -401,7 +401,7 @@ router.get("/missing", authenticate, asyncHandler(async (req, res, next) => {
 /* ---------------------------------------------------------------
     METTRE A JOUR UN ANIMAL
 --------------------------------------------------------------- */
-router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(Animal), checkPermissions, asyncHandler(async (req, res, next) => {
+router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(Animal), checkPermissionsAnimal, asyncHandler(async (req, res, next) => {
     const animal = req.ressource;
     if (req.body.name !== undefined) {
         animal.name = req.body.name;
