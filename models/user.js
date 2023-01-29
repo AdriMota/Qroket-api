@@ -41,10 +41,9 @@ const userSchema = new Schema({
         enum: [ 'admin', 'user' ],
         default: 'user'
     },
-    // Foreign key for Location
     location: {
-        type: Schema.Types.ObjectId, 
-        ref: 'Location'
+        type: String, 
+        required: true
     }
 });
 
