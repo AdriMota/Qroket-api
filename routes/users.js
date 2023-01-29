@@ -486,10 +486,10 @@ router.delete('/:id', authenticate, loadRessourceFromParamsMiddleware(User), che
   const user = req.ressource;
 
   // Delete image
-  const filePath = new URL(`../uploads/${user.picture.name}`, import.meta.url)
+  /* const filePath = new URL(`../uploads/${user.picture.name}`, import.meta.url)
   fs.access(filePath, (err) => {
     if (!err) fs.unlinkSync(filePath)
-  })
+  }) */
 
   // Delete user
   await User.deleteOne({
