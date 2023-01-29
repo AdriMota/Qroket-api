@@ -64,9 +64,7 @@ router.post("/", asyncHandler(async (req, res, next) => {
   const newUser = new User(req.body);
   newUser.password = passwordHash;
 
-  if (req.body.role === "admin") {
-    res.status(403).send("Tu n'as pas les droits pour créer des utilisateurs avec ce rôle :/")
-  } else {
+  
     // Save that document
     await newUser.save();
 
@@ -77,7 +75,7 @@ router.post("/", asyncHandler(async (req, res, next) => {
       // BroadcastMessage pour les administrateurs seulement.
       broadcastAdminMessage({ event: "New admin added : ", user: newUser });
     }
-  }
+  
 
 }));
 
