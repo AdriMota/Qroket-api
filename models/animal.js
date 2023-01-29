@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const animalSchema = new Schema({
     name: {
         type: String,
-        required: false
+        required: true
     },
     age: {
         type: Number,
