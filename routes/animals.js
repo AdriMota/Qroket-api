@@ -472,14 +472,14 @@ router.delete('/:id', authenticate, loadRessourceFromParamsMiddleware(Animal), c
     const animal = req.ressource;
 
     // Delete image
-    let pictures = animal.pictures;
+    /* let pictures = animal.pictures;
     for (const picture of pictures) {
         const filePath = new URL(`../uploads/${picture.name}`, import.meta.url);
         
         fs.access(filePath, (err) => {
             if (!err) fs.unlinkSync(filePath);
         })
-    }
+    } */
     
     // Delete animal
     await Animal.deleteOne({
