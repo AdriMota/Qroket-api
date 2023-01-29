@@ -435,6 +435,10 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(Animal), ch
         animal.location = req.body.location;
     }
 
+    if (req.body.pictures !== undefined) {
+        user.pictures = req.body.pictures;
+      }
+
     await animal.save();
     res.status(200).send(animal);
 

@@ -442,6 +442,10 @@ router.patch('/:id', authenticate, loadRessourceFromParamsMiddleware(User), chec
     })
   } */
 
+  if (req.body.picture !== undefined) {
+    user.picture = req.body.picture;
+  }
+
   await user.save();
   res.status(200).send(user);
 
