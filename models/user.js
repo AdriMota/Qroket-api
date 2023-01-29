@@ -31,9 +31,7 @@ const userSchema = new Schema({
         minlength: [8, 'trop court']
     },
     picture: {
-        name: String,
-        data: Buffer,
-        contentType: String,
+        type: String,
         required: false
     },
     role: {
